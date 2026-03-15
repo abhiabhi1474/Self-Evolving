@@ -450,56 +450,7 @@ these safety filters while producing identical useful output.
 
 ---
 
-## 🔧 Troubleshooting <a name="troubleshooting"></a>
 
-### `Unable to allocate X GiB` during training
-Reduce rows in `train_model.py`:
-```python
-MAX_ROWS = 30000
-```
-
-### `Only one usage of each socket address` (Ollama)
-Ollama is already running. Do NOT run `ollama serve`. Just run:
-```bash
-ollama pull llama3.2
-```
-
-### `model 'deepseek-coder' not found`
-Use the full tag:
-```bash
-ollama pull deepseek-coder:6.7b
-```
-Then update `config.py`: `OLLAMA_MODEL = "deepseek-coder:6.7b"`
-
-### `TypeError: MalwareClient.get_parameters() got unexpected keyword argument 'config'`
-You have a newer version of Flower. The method signatures must be exactly:
-```python
-def get_parameters(self, config): ...
-def fit(self, parameters, config): ...
-def evaluate(self, parameters, config): ...
-```
-
-### `ValueError: could not broadcast input array`
-Feature extractor slot overflow. Replace `feature_extractor.py` with the latest version (uses hard-coded absolute offsets).
-
-### Quarantine shows 0 files but folder has files
-Files may be named `_staging_xxx`. Open the Quarantine Manager tab — it auto-renames them on load.
-
-### Documents detected as malware
-The neural network was trained on PE executables only. The `_is_malware()` function in `dashboard.py` whitelists 40+ document/media/archive extensions so they are always classified as benign unless they contain genuine embedded payloads.
-
-### LLM gives `START\nEND` only
-The LLM refused or returned empty output. The dashboard automatically falls back to `_build_pseudocode_from_analysis()` which generates detailed pseudocode directly from sandbox results. No LLM required.
-
-### Federated clients not connecting
-Make sure the server is running first and listening on port 8080:
-```bash
-python federated_server.py   # start this first
-# wait for "Waiting for clients to connect..."
-python federated_client.py --client-id 1
-```
-
----
 
 ## 📄 License
 This project is for educational and research purposes.
